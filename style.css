@@ -1,0 +1,61 @@
+:root {
+    --text-color: hsl(0, 0%, 85%);
+    --background-color: hsl(0, 0%, 15%);
+}
+
+a {
+    color: hsl(192, 53%, 55%);
+}
+
+body {
+    color:            var(--text-color);
+    background-color: var(--background-color);
+    max-width: 100%;
+    overflow-y: hidden;
+}
+
+regular::after, light::after { 
+    content: '\A'; 
+}
+
+.jetbrains-mono {
+    font-family: "JetBrains Mono", monospace;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+.jetbrains-mono regular {
+    font-weight: 400;
+}
+
+.jetbrains-mono light {
+    font-weight: 300;
+}
+
+#terminal-input,
+#terminal-output {
+    width: 100%;
+    height: 100%;
+    word-wrap: break-word;
+    word-break: break-all;
+    display: inline;
+}
+
+#terminal-input regular::after {
+    content: none;
+}
+
+#terminal-input-prompt {
+    display: inline;
+    min-width: 100px;
+}
+
+#terminal-input-prompt:read-write:focus {
+    outline: none;
+    outline-color: none;
+}
+
+#terminal-header *,
+#terminal-output * {
+    white-space: pre;
+}
