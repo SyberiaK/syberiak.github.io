@@ -32,4 +32,10 @@ Feel free to report any bugs or suggest new features.
 - [x] Inline commands (separated with `;`) support
 - [x] Autoscroll down the page (to replicate terminal's behaviour)
 - [ ] Adapt for mobile?
+- [ ] Reconsider the color palette
+  - [ ] Background
+  - [ ] Text
+  - [ ] Anchors
+  - [ ] Custom colors?
+  - [ ] Light mode?
 - [ ] More things to come...

@@ -39,7 +39,8 @@ const MOTDS = [
     "Sometimes, <b>figuring out</b> is the most entertaining thing to do.",
     "There are definitely more things to come <b>;)</b>",
     "No, this website is not made with <a href=\"https://github.com/jcubic/jquery.terminal\">\"jquery.terminal\"</a>. Although it looks nice.",
-    "GUIs were introduced by a devil."
+    "GUIs were introduced by a devil.",
+    "You can report bugs or suggest new features on <a href=\"https://github.com/SyberiaK/syberiak.github.io/issues\">GitHub</a>."
 ];
 const TITLE = "SybTerminal";
 const VERSION = "v0.0.0001";
