@@ -1,27 +1,26 @@
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min) ) + min;
-}
-
-function getRandomChoice(arr) {
-    return arr[getRandomInt(0, arr.length)];
-}
-
-function cleanFromHTML(str) {
-    return str.replace(/<\/?[^>]+(>|$)/g, "");
-}
-
-
 // Update this things
+const MOTDS = [
+    "Sometimes, <b>figuring out</b> is the most entertaining thing to do.",
+    "There are definitely more things to come <b>;)</b>",
+    "No, this website is not made with <a href=\"https://github.com/jcubic/jquery.terminal\">\"jquery.terminal\"</a>. Although it looks nice.",
+    "GUIs were introduced by a devil.",
+    "You can report bugs or suggest new features on <a href=\"https://github.com/SyberiaK/syberiak.github.io/issues\">GitHub</a>."
+];
+const TITLE = "SybTerminal";
+const VERSION = "v0.0.0002";
+
 const COMMANDS = {
     "help": () => {
-        return "\
-help     Prints out all available commands<br>\
-echo     Echoes given text (because why not)<br>\
-clear    Clears the console<br>\
+        print({}, "\
+help     Prints out all available commands\n\
+echo     Prints out given text (because why not)\n\
+clear    Clears the console\n\
 motd     Updates the Message of The Day\
-";
+");
     },
-    "echo": (...text) => { return text.join(" "); },
+    "echo": (...text) => { 
+        print({}, text); 
+    },
     "clear": () => {
         terminalHeader.innerHTML = "";
         terminalOutput.innerHTML = "";
@@ -35,15 +34,25 @@ motd     Updates the Message of The Day\
         updateHeader();
     }
 }
-const MOTDS = [
-    "Sometimes, <b>figuring out</b> is the most entertaining thing to do.",
-    "There are definitely more things to come <b>;)</b>",
-    "No, this website is not made with <a href=\"https://github.com/jcubic/jquery.terminal\">\"jquery.terminal\"</a>. Although it looks nice.",
-    "GUIs were introduced by a devil.",
-    "You can report bugs or suggest new features on <a href=\"https://github.com/SyberiaK/syberiak.github.io/issues\">GitHub</a>."
-];
-const TITLE = "SybTerminal";
-const VERSION = "v0.0.0001";
+// end
+
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min) ) + min;
+}
+
+function getRandomChoice(arr) {
+    return arr[getRandomInt(0, arr.length)];
+}
+
+function cleanFromHTML(str) {
+    return str.replace(/<\/?[^>]+(>|$)/g, "");
+}
+
+function reformatStringForHTML(str) {
+    return str.replace(/\r\n|\r|\n/g, "<br>").replace(/\s/g, "&nbsp;");
+}
+
 
 function updateHeader() {
     const titleLength = `${TITLE} ${VERSION}`.length;
@@ -59,7 +68,6 @@ function updateHeader() {
 
     terminalHeader.innerHTML = terminalHeaderLines
 }
-// end
 
 let motd = getRandomChoice(MOTDS);
 
@@ -73,7 +81,7 @@ const terminalOutput = document.getElementById("terminal-output");
 
 function handleCommand(query, recursive) {
     if (recursive != true) {
-        terminalOutput.innerHTML += `>${query}<br><br>`;
+        print({}, `>${query}`)
     }
 
     if (query.includes(";")) {
@@ -85,24 +93,30 @@ function handleCommand(query, recursive) {
     }
 
     let [cmd, ...args] = query.split(/\s+/);
-    let resultedStr;
 
-    if (cmd in COMMANDS) {
-        resultedStr = COMMANDS[cmd](...args);
-    } else {
-        resultedStr = `Unknown command: "${cmd}". Use "help" to get info about all available commands.`;
+    if (!(cmd in COMMANDS)) {
+        print({}, `Unknown command: "${cmd}". Use "help" to get info about all available commands.`);
+        return;
     }
 
-    if (resultedStr) {
-        terminalOutput.innerHTML += resultedStr.replace(/\s/g, '&nbsp;');
-        terminalOutput.innerHTML += "<br><br>";
-    }
+    COMMANDS[cmd](...args);
+}
+
+function print({sep = " ", end = "\n\n"}, ...data) {
+    let totalOutput;
+    if (data.length > 1) 
+        totalOutput = data.join(sep);
+    else 
+        totalOutput = (data[0] ?? "");
+    totalOutput += end;
+
+    terminalOutput.innerHTML += reformatStringForHTML(totalOutput);
 }
 
 setTimeout(() => {
     terminalInput.style.opacity = 1;
 
-    document.querySelector("html").addEventListener("click", (e) => {
+    document.querySelector("html").addEventListener("click", () => {
         terminalInputPrompt.focus();
     })
 
@@ -112,7 +126,6 @@ setTimeout(() => {
 
             const query = terminalInputPrompt.innerText;
 
-            console.log(query);
             handleCommand(query);
             terminalInputPrompt.innerText = "";
         }
