@@ -7,7 +7,7 @@ const MOTDS = [
     "You can report bugs or suggest new features on <a href=\"https://github.com/SyberiaK/syberiak.github.io/issues\">GitHub</a>."
 ];
 const TITLE = "SybTerminal";
-const VERSION = "v0.0.0003";
+const VERSION = "v0.0.0004";
 
 const COMMANDS = {
     "help": () => {
@@ -57,7 +57,7 @@ function reformatStringForHTML(str) {
 function updateHeader() {
     let isTitleSplitted = false;
     const terminalHeaderLines = [];
-    const maxLineLength = Math.floor((window.innerWidth - 6) / 11);
+    const maxLineLength = Math.floor((window.innerWidth - 6) / 10) - 4;
     
     let titleLength = `${TITLE} ${VERSION}`.length;
     if (titleLength > maxLineLength) {
