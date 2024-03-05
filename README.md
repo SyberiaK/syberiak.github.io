@@ -14,10 +14,11 @@ Feel free to report any bugs or suggest new features.
   - [x] MOTD in the header
     - [x] Randomize MOTD
     - [ ] More MOTDs
-  - [ ] Resizing with window changing size
+  - [x] Resizing with window changing size
 - [x] Add input prompt
   - [x] The input prompt can expand horizontally and vertically
   - [x] Autofocus on the input prompt
+  - [ ] Use arrow keys to switch between previous inputs
 - [x] Add output section
 - [x] Get input from input prompt
 - [x] Parse command from input
