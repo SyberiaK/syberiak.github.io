@@ -1,22 +1,22 @@
 // Update this things
 const MOTDS = [
-    "Sometimes, <b>figuring out</b> is the most entertaining thing to do.",
-    "There are definitely more things to come <b>;)</b>",
-    "No, this website is not made with <a href=\"https://github.com/jcubic/jquery.terminal\">\"jquery.terminal\"</a>. Although it looks nice.",
+    "Sometimes, **figuring out** is the most entertaining thing to do.",
+    "There are definitely more things to come **;)**",
+    "No, this website is not made with [\"jquery.terminal\"](https://github.com/jcubic/jquery.terminal). Although it looks nice.",
     "GUIs were introduced by a devil.",
-    "You can report bugs or suggest new features on <a href=\"https://github.com/SyberiaK/syberiak.github.io/issues\">GitHub</a>."
+    "You can report bugs or suggest new features on [GitHub](https://github.com/SyberiaK/syberiak.github.io/issues)."
 ];
 const TITLE = "SybTerminal";
-const VERSION = "v0.0.0004";
+const VERSION = "v0.1.0";
 
 const COMMANDS = {
     "help": () => {
-        print({}, "\
-help     Prints out all available commands\n\
-echo     Prints out given text (because why not)\n\
-clear    Clears the console\n\
-motd     Updates the Message of The Day\
-");
+        print({sep: "\n"}, 
+              "help        Prints out all available commands",
+              "echo        Prints out given text (because why not)",
+              "clear       Clears the console",
+              "motd        Updates the Message of The Day",
+              "projects    Prints out the list of my featured projects");
     },
     "echo": (...text) => { 
         print({}, ...text); 
@@ -28,10 +28,18 @@ motd     Updates the Message of The Day\
     "motd": () => {
         let temp = motd;
         while (temp === motd) {
-            temp = getRandomChoice(MOTDS);
+            temp = reformatStringForHTML(getRandomChoice(MOTDS));
         }
         motd = temp;
         updateHeader();
+    },
+    "projects": () => {
+        print({sep: "\n"}, 
+              "**These are some of my projects I really like:**",
+              "- [aquaismissing/INCS2bot](https://github.com/aquaismissing/INCS2bot) - multilingual Telegram bot that provides a lot of useful information about CS2;",
+              "- [sl10n](https://github.com/SyberiaK/sl10n) - Python's for making type-safe localization.",
+              "",
+              "**Note:** the list may be extended with new projects in the near future.");
     }
 }
 // end
@@ -46,11 +54,16 @@ function getRandomChoice(arr) {
 }
 
 function cleanFromHTML(str) {
-    return str.replace(/<\/?[^>]+(>|$)/g, "");
+    return str.replace(/<\/?[^>]+(>|$)/g, "").replace("&nbsp;", " ");
 }
 
 function reformatStringForHTML(str) {
-    return str.replace(/\r\n|\r|\n/g, "<br>").replace(/\s/g, "&nbsp;");
+    return str.replace(/\r\n|\r|\n/g, "<br>")
+              .replace(/\s\s\s/g, "&nbsp;&nbsp;&nbsp;")  // html suck ass
+              .replace(/\s\s/g, "&nbsp;&nbsp;")
+              .replace(/\[([^\]]+)]\(([^\)]+)\)/g, "<a href=\"$2\">$1</a>")
+              .replace(/\*\*([^\*]+)\*\*/g, "<b>$1</b>")
+              .replace(/\*([^\*]+)\*/g, "<i>$1</i>");
 }
 
 
@@ -70,6 +83,7 @@ function updateHeader() {
     if (motdLength > maxLineLength) {
         const lines = [];
         const motdParts = motd.split(/\s+(?![^<]*>|[^<>]*<\/)/g);
+
         let line = [];
         for (const part of motdParts) {
             if (cleanFromHTML(line + part).length > maxLineLength) {
@@ -111,10 +125,10 @@ function updateHeader() {
     terminalHeader.innerHTML = header;
 }
 
-let motd = getRandomChoice(MOTDS);
+let motd = reformatStringForHTML(getRandomChoice(MOTDS));
 
 const terminalHeader = document.getElementById("terminal-header");
-updateHeader(motd);
+updateHeader();
 
 const terminalInput = document.getElementById("terminal-input");
 const terminalInputPrompt = document.getElementById("terminal-input-prompt");
@@ -146,9 +160,9 @@ function handleCommand(query, recursive) {
 
 function print({sep = " ", end = "\n\n"}, ...data) {
     let totalOutput;
-    if (data.length > 1) 
+    if (data.length > 1)
         totalOutput = data.join(sep);
-    else 
+    else
         totalOutput = (data[0] ?? "");
     totalOutput += end;
 
@@ -164,7 +178,7 @@ setTimeout(() => {
 
     document.querySelector("html").addEventListener("click", () => {
         terminalInputPrompt.focus();
-    })
+    });
 
     document.querySelector("html").addEventListener("keydown", (e) => {
         if (e.key == "Enter") {
@@ -179,8 +193,6 @@ setTimeout(() => {
 }, 500);
 
 
-const config = { childList: true };
-
 const callback = function (mutationsList, _) {
   for (let mutation of mutationsList) {
     if (mutation.type === "childList") {
@@ -190,6 +202,6 @@ const callback = function (mutationsList, _) {
 };
 
 const observer = new MutationObserver(callback);
-observer.observe(terminalOutput, config);
+observer.observe(terminalOutput, { childList: true });
 
 
