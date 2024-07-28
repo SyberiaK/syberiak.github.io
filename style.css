@@ -37,7 +37,7 @@ regular::after, light::after {
     width: 100%;
     height: 100%;
     word-wrap: break-word;
-    word-break: break-all;
+    word-break: break-word;
     display: inline;
 }
 

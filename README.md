@@ -13,12 +13,13 @@ Feel free to report any bugs or suggest new features.
   - [x] The header displays title and version
   - [x] MOTD in the header
     - [x] Randomize MOTD
-    - [ ] More MOTDs
+    - [x] More MOTDs
+    - [x] MORE MOTDS!!!!!
   - [x] Resizing with window changing size
 - [x] Add input prompt
   - [x] The input prompt can expand horizontally and vertically
   - [x] Autofocus on the input prompt
-  - [ ] Use arrow keys to switch between previous inputs
+  - [x] Use arrow keys to switch between previous inputs
 - [x] Add output section
 - [x] Get input from input prompt
 - [x] Parse command from input
@@ -32,7 +33,7 @@ Feel free to report any bugs or suggest new features.
   - [ ] more funny commands?
 - [x] Inline commands (separated with `;`) support
 - [x] Autoscroll down the page (to replicate terminal's behaviour)
-- [ ] Adapt for mobile?
+- [x] Adapt for mobile
 - [ ] Reconsider the color palette
   - [ ] Background
   - [ ] Text
