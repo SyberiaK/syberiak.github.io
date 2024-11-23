@@ -3,9 +3,8 @@ const MOTDS = [
     "Sometimes, **figuring out** is the most entertaining thing to do.",
     "There are definitely more things to come **;)**",
     "No, this website is not made with [jquery.terminal](https://github.com/jcubic/jquery.terminal). Although it looks nice.",
-    "GUIs were introduced by a devil.",
     "You can report bugs or suggest new features on [my GitHub repo](https://github.com/SyberiaK/syberiak.github.io/issues).",
-    "One day you might see me on [WebX](https://github.com/face-hh/webx) lol",
+    "RIP [WebX](https://github.com/face-hh/webx) (2024-2024)",
     "**LET'S GO GAMBLING!!!**",
     "Golf?",
     "Who knows?",
@@ -14,14 +13,28 @@ const MOTDS = [
     "I'm not inside a fusion reactor.",
     "Any thoughts what to add here? Anything?",
     "buh",
-    "\"**CALL VALVE LAZY ONE MORE TIME**\", - some German dude, somewhere.",
-    "Some say you can get access to Deadlock here...",
+    "\"**CALL VALVE LAZY ONE MORE TIME**\", - some German dude, probably.",
     "undefined",
-    "Don't forget to like and sybscribe."
+    "defined",
+    "Don't forget to like and sybscribe.",
+    "LULE",
+    "aga",
+    "xdd",
+    "unxdd"
 ];
 const TITLE = "SybTerminal";
-const VERSION = "v0.2.0";
+const VERSION = "v0.3.0";
 const PREVIOUS_INPUTS_LIMIT = 50;
+const THEMES = {
+    dark: {
+        text: "#d9d9d9",
+        background: "#121417"
+    },
+    light: {
+        text: "#000",
+        background: "#d9d9d9"
+    }
+}
 const PRECACHED_PROJECTS = ["incs2bot"];
 const projects = {}
 
@@ -33,11 +46,11 @@ async function fetchProjectInfo(filename) {
 async function parseChangelog() {
     const versionLabel = `### ${VERSION.slice(1)}`
 
-    const res = await fetch("CHANGELOG.md");
+    const res = await fetch("./CHANGELOG.md");
     const pages = (await res.text()).split("\r\n\r\n");
     for (let i = 1; i < pages.length; i++) {
         if (pages[i].startsWith(versionLabel)) {
-            return VERSION + " - " + pages[i].slice(`${versionLabel}\r\n`.length);
+            return "v" + pages[i].slice("### ".length);
         }
     }
 }
@@ -52,7 +65,6 @@ let changelog = "";
 
 parseChangelog().then((text) => {
     changelog = text;
-    console.log(text);
 });
 
 // fetch("projects/").then((res) => res.text()).then((text) => console.log(text))
@@ -66,16 +78,18 @@ const COMMANDS = {
         ],
         func: (name = "") => {
             if (name === "") {
-                print({sep: "\n"}, 
+                print({sep: "\n"},
                     "help [NAME]     Prints out all the available commands",
                     "                (specify NAME argument to get detailed info)",
                     "changelog       Prints out current changelog",
-                    "echo [...TEXT]  Prints out given text (because why not)",
+                    "echo [...TEXT]  Prints out given TEXT (because why not)",
                     "clear           Clears the console",
                     "motd            Updates the Message of The Day",
                     "project NAME    Prints out the information about one",
                     "                of the featured projects",
-                    "                (use \"list\" to get the full list)"
+                    "                (use \"list\" to see all of them)",
+                    "theme NAME      Sets the theme by name",
+                    "                (use \"list\" to see available themes)"
                 );
                 return;
             }
@@ -114,6 +128,45 @@ const COMMANDS = {
         ],
         func: (...text) => { 
             print({}, ...text); 
+        }
+    },
+    "theme": {
+        help_description: [
+            "theme NAME",
+            "    Changes the terminal theme.",
+            "    Available themes: `dark`, `white`"
+        ],
+        func: (name = "") => {
+            if (name === "") {
+                print({sep: "\n"}, 
+                    "ERROR: Specify a theme you want to set.",
+                    "Use \"theme list\" to get the full list of featured projects."
+                )
+                return;
+            }
+            if (name === "list") {
+                print({sep: "\n"}, 
+                    "Available themes: `dark`, `white`");
+                return;
+            }
+            if (!THEMES[name]) {
+                print({sep: "\n"}, 
+                    "ERROR: Can't find the theme you entered.",
+                    "Use \"theme list\" to get the full list of featured projects."
+                )
+                return;
+            }
+            
+            applyTheme(name);
+            if (name === "light") {
+                motd = "eww light mode";
+                updateHeader();
+            }
+            else if (name === "dark" && motd == "eww light mode") {
+                motd = "much better now";
+                updateHeader();
+            }
+            localStorage.setItem("theme", name);
         }
     },
     "clear": {
@@ -165,7 +218,7 @@ const COMMANDS = {
                     "- [You Shall Not Climb!](https://github.com/SyberiaK/ysnc) - fixes a Minecraft \"feature\" of all mobs being able to climb ladders (even if they aren't supposed to);",
                     "- [CSXhair](https://github.com/SyberiaK/csxhair) - decoding/encoding CS:GO/CS2 crosshairs without doing binary gymnastics by yourself.",
                     "",
-                    "I would really appreciate if you leave a star to any of those (including this site **;D**)",
+                    "I would really appreciate if you leave a star to any of those (including this website **;D**)",
                     "**Note:** the list may be extended with new projects in the near future.");
                 return;
             }
@@ -193,11 +246,6 @@ const COMMANDS = {
     "buh": {
         help_description: ["buh", "    ***buh***"],
         func: () => print({}, "***buh***")
-    },
-    "deadlock": {
-        func: () => {
-            window.open("https://youtu.be/dQw4w9WgXcQ", "_blank").focus()
-        }
     }
 }
 // end
@@ -221,7 +269,8 @@ function reformatStringForHTML(str) {
               .replace(/\s\s/g, "&nbsp;&nbsp;")
               .replace(/\[([^\]]+)]\(([^\)]+)\)/g, "<a href=\"$2\">$1</a>")
               .replace(/\*\*([^\*]+)\*\*/g, "<b>$1</b>")
-              .replace(/\*([^\*]+)\*/g, "<i>$1</i>");
+              .replace(/\*([^\*]+)\*/g, "<i>$1</i>")
+              .replace(/\`([^\`]+)\`/g, "<code>$1</code>");
 }
 
 
@@ -283,16 +332,18 @@ function updateHeader() {
     terminalHeader.innerHTML = header;
 }
 
-let motd = reformatStringForHTML(getRandomChoice(MOTDS));
-
 const terminalHeader = document.getElementById("terminal-header");
-updateHeader();
-
 const terminalInput = document.getElementById("terminal-input");
 const terminalInputPrompt = document.getElementById("terminal-input-prompt");
 const terminalOutput = document.getElementById("terminal-output");
 const previousInputs = [];
 let previousInputsPointer = 0;
+const prefersDarkTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+const themeName = localStorage.getItem("theme") ?? ("dark" ? prefersDarkTheme : "light");
+applyTheme(themeName);
+
+let motd = reformatStringForHTML(getRandomChoice(MOTDS));
+updateHeader();
 
 
 function handleCommand(query, recursive) {
@@ -316,6 +367,13 @@ function handleCommand(query, recursive) {
     }
 
     COMMANDS[cmd].func(...args);
+}
+
+function applyTheme(name) {
+    let theme = THEMES[name] ?? THEMES.dark;
+
+    document.body.style.backgroundColor = theme.background;
+    document.body.style.color = theme.text;
 }
 
 function print({sep = " ", end = "\n\n"}, ...data) {

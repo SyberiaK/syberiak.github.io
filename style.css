@@ -1,15 +1,8 @@
-:root {
-    --text-color: hsl(0, 0%, 85%);
-    --background-color: hsl(0, 0%, 15%);
-}
-
 a {
-    color: hsl(192, 53%, 55%);
+    color: #4fb1c9;
 }
 
 body {
-    color:            var(--text-color);
-    background-color: var(--background-color);
     max-width: 100%;
     overflow-y: hidden;
 }

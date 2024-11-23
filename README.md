@@ -27,17 +27,17 @@ Feel free to report any bugs or suggest new features.
   - [x] "help" command
   - [x] "clear" command
   - [x] "motd" command (updates MOTD)
-  - [ ] "projects" command (basically shows the list of my projects)
+  - [x] "projects" command (basically shows the list of my projects)
     - [ ] page support?
     - [ ] specific project info?
   - [ ] more funny commands?
 - [x] Inline commands (separated with `;`) support
 - [x] Autoscroll down the page (to replicate terminal's behaviour)
 - [x] Adapt for mobile
-- [ ] Reconsider the color palette
-  - [ ] Background
-  - [ ] Text
-  - [ ] Anchors
-  - [ ] Custom colors?
-  - [ ] Light mode?
+- [x] Reconsider the color palette
+  - [x] Background
+  - [x] Text
+  - [x] Anchors
+  - [x] Custom colors?
+  - [x] Light mode?
 - [ ] More things to come...
