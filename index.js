@@ -47,7 +47,7 @@ async function parseChangelog() {
     const versionLabel = `### ${VERSION.slice(1)}`
 
     const res = await fetch("./CHANGELOG.md");
-    const pages = (await res.text()).split("\r\n\r\n");
+    const pages = (await res.text()).split(/(?:\n\n)|(?:\r\n\r\n)/g);
     for (let i = 1; i < pages.length; i++) {
         if (pages[i].startsWith(versionLabel)) {
             return "v" + pages[i].slice("### ".length);

@@ -4,7 +4,7 @@
 - Added light theme (eww)
 - New `theme` command! Allows you to change the terminal theme.
   - Usage: `theme NAME` (example: `theme light`)
-- Potentially fixed `changelog` command.
+- Fixed `changelog` command.
 - Updated MOTDs.
 
 ### 0.2.0 - The biggest update so far!
