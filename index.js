@@ -10,7 +10,7 @@ const MOTDS = [
     "Who knows?",
     "I use Windows **AND I'M PROUD OF IT!**",
     "Watch my 9mm go bang",
-    "I'm not inside a fusion reactor.",
+    "I'm not inside of a fusion reactor.",
     "Any thoughts what to add here? Anything?",
     "buh",
     "\"**CALL VALVE LAZY ONE MORE TIME**\", - some German dude, probably.",
@@ -20,10 +20,13 @@ const MOTDS = [
     "LULE",
     "aga",
     "xdd",
-    "unxdd"
+    "unxdd",
+    "Your gamesense was on point last match! You got 3 kills through smoke.",
+    "Have anyone had experience with USB microphones? Don't they have this annoying static sound?",
+    "[*we are all insane...*](https://www.youtube.com/watch?v=KsdGl7UZmTE)",
 ];
 const TITLE = "SybTerminal";
-const VERSION = "v0.3.0";
+const VERSION = "0.3.1";
 const PREVIOUS_INPUTS_LIMIT = 50;
 const THEMES = {
     dark: {
@@ -43,11 +46,14 @@ async function fetchProjectInfo(filename) {
     return await res.text();
 }
 
-async function parseChangelog() {
-    const versionLabel = `### ${VERSION.slice(1)}`
+async function parseChangelog(version) {
+    if (version.startsWith("v")) version = version.slice(1);
+
+    const versionLabel = `### ${version}`
 
     const res = await fetch("./CHANGELOG.md");
     const pages = (await res.text()).split(/(?:\n\n)|(?:\r\n\r\n)/g);
+
     for (let i = 1; i < pages.length; i++) {
         if (pages[i].startsWith(versionLabel)) {
             return "v" + pages[i].slice("### ".length);
@@ -61,12 +67,6 @@ PRECACHED_PROJECTS.forEach((name) => {
     })
 })
 
-let changelog = "";
-
-parseChangelog().then((text) => {
-    changelog = text;
-});
-
 // fetch("projects/").then((res) => res.text()).then((text) => console.log(text))
 
 const COMMANDS = {
@@ -76,7 +76,7 @@ const COMMANDS = {
             "    Prints out all the available commands.",
             "    duh."
         ],
-        func: (name = "") => {
+        func: async (name = "") => {
             if (name === "") {
                 print({sep: "\n"},
                     "help [NAME]     Prints out all the available commands",
@@ -106,12 +106,14 @@ const COMMANDS = {
     },
     "changelog": {
         help_description: [
-            "changelog",
-            "    Prints out the changelog",
-            "    of the current version."
+            "changelog [VERSION]",
+            "    Prints out the VERSION changelog.",
+            `    (if unspecified, current version (${VERSION}))`
         ],
-        func: () => { 
-            print({sep: "\n"}, changelog);
+        func: async (version = "") => {
+            if (version === "") version = VERSION;
+            const changelog = await parseChangelog(version);
+            print({sep: "\n"}, changelog ?? "ERROR: No changelog provided for that version.");
         }
     },
     "echo": {
@@ -126,7 +128,7 @@ const COMMANDS = {
             "",
             "        Hello, world!"
         ],
-        func: (...text) => { 
+        func: async (...text) => { 
             print({}, ...text); 
         }
     },
@@ -134,9 +136,9 @@ const COMMANDS = {
         help_description: [
             "theme NAME",
             "    Changes the terminal theme.",
-            "    Available themes: `dark`, `white`"
+            "    Available themes: " + Object.keys(THEMES).map((name) => `\`${name}\``).join(", ")
         ],
-        func: (name = "") => {
+        func: async (name = "") => {
             if (name === "") {
                 print({sep: "\n"}, 
                     "ERROR: Specify a theme you want to set.",
@@ -146,7 +148,7 @@ const COMMANDS = {
             }
             if (name === "list") {
                 print({sep: "\n"}, 
-                    "Available themes: `dark`, `white`");
+                    "Available themes: " + Object.keys(THEMES).map((name) => `\`${name}\``).join(", "));
                 return;
             }
             if (!THEMES[name]) {
@@ -174,7 +176,7 @@ const COMMANDS = {
             "clear",
             "    Clears the console."
         ],
-        func: () => {
+        func: async () => {
             terminalHeader.innerHTML = "";
             terminalOutput.innerHTML = "";
         }
@@ -185,7 +187,7 @@ const COMMANDS = {
             "    Updates the **Message of The Day**",
             "    at the header."
         ],
-        func: () => {
+        func: async () => {
             let temp = motd;
             while (temp === motd) {
                 temp = reformatStringForHTML(getRandomChoice(MOTDS));
@@ -202,7 +204,7 @@ const COMMANDS = {
             "    specified by NAME argument.",
             "    Use \"list\" to get the full list."
         ],
-        func: (name = "") => {
+        func: async (name = "") => {
             if (name === "") {
                 print({sep: "\n"}, 
                     "ERROR: Specify a project name.",
@@ -244,8 +246,70 @@ const COMMANDS = {
         }
     },
     "buh": {
-        help_description: ["buh", "    ***buh***"],
-        func: () => print({}, "***buh***")
+        help_description: [
+            "buh",
+            "    ***buh***"
+        ],
+        func: async () => { 
+            print({}, "***buh***"); 
+        }
+    },
+    "guh": {
+        help_description: [
+            "guh",
+            "    ***guh***"
+        ],
+        func: async () => { 
+            print({}, "***guh***"); 
+        }
+    },
+    "juh": {
+        help_description: [
+            "juh",
+            "    ***juh***"
+        ],
+        func: async () => { 
+            print({}, "***juh***"); 
+        }
+    },
+    "flip": {
+        help_description: [
+            "flip",
+            "    Try it yourself."
+        ],
+        func: async () => {
+            document.body.style.animation = "flip 1.5s ease-in-out 1";
+            setTimeout(() => {
+                document.body.style.animation = null;
+            }, 1500)
+        }
+    },
+    "who": {
+        help_description: [
+            "who",
+            "    Me."
+        ],
+        func: async () => {
+            print({}, "SyberiaK"); 
+        }
+    },
+    "syberiak": {
+        help_description: [
+            "syberiak",
+            "    That's me."
+        ],
+        func: async () => {
+            print({}, "helo"); 
+        }
+    },
+    "version": {
+        help_description: [
+            "version",
+            "    Prints out the current version."
+        ],
+        func: async () => {
+            print({}, VERSION);
+        }
     }
 }
 // end
@@ -279,10 +343,10 @@ function updateHeader() {
     const terminalHeaderLines = [];
     const maxLineLength = Math.floor((window.innerWidth - 6) / 10) - 4;
     
-    let titleLength = `${TITLE} ${VERSION}`.length;
+    let titleLength = `${TITLE} v${VERSION}`.length;
     if (titleLength > maxLineLength) {
         isTitleSplitted = true;
-        titleLength = Math.max(TITLE.length, VERSION.length);
+        titleLength = Math.max(TITLE.length, ("v" + VERSION).length);
     }
     let longestLineLength = titleLength;
 
@@ -312,11 +376,11 @@ function updateHeader() {
     }
 
     if (isTitleSplitted) {
-        titleLength = Math.max(TITLE.length, VERSION.length);
+        titleLength = Math.max(TITLE.length, ("v" + VERSION).length);
         terminalHeaderLines.splice(0, 0, `| ${TITLE}` + " ".repeat(longestLineLength - TITLE.length) + " |",
-                                         `| ${VERSION}` + " ".repeat(longestLineLength - VERSION.length) + " |");
+                                         `| v${VERSION}` + " ".repeat(longestLineLength - ("v" + VERSION).length) + " |");
     } else {
-        terminalHeaderLines.splice(0, 0, `| ${TITLE} ${VERSION}` + " ".repeat(longestLineLength - titleLength) + " |");
+        terminalHeaderLines.splice(0, 0, `| ${TITLE} v${VERSION}` + " ".repeat(longestLineLength - titleLength) + " |");
     }
 
 
@@ -346,7 +410,7 @@ let motd = reformatStringForHTML(getRandomChoice(MOTDS));
 updateHeader();
 
 
-function handleCommand(query, recursive) {
+async function handleCommand(query, recursive) {
     if (recursive != true) {
         print({}, `>${query}`);
     }
@@ -354,7 +418,7 @@ function handleCommand(query, recursive) {
     if (query.includes(";")) {
         let [...cmds] = query.split(";");
         for (let cmd of cmds) {
-            handleCommand(cmd.trimStart(), true);
+            await handleCommand(cmd.trimStart(), true);
         }
         return;
     }
@@ -366,7 +430,7 @@ function handleCommand(query, recursive) {
         return;
     }
 
-    COMMANDS[cmd].func(...args);
+    await COMMANDS[cmd].func(...args);
 }
 
 function applyTheme(name) {
@@ -394,7 +458,7 @@ setTimeout(() => {
         terminalInputPrompt.focus();
     });
 
-    document.querySelector("html").addEventListener("keydown", (e) => {
+    document.querySelector("html").addEventListener("keydown", async (e) => {
         if (e.key === "Enter") {
             e.preventDefault();
 
@@ -407,7 +471,7 @@ setTimeout(() => {
             }
             previousInputsPointer = -1;
 
-            handleCommand(query);
+            await handleCommand(query);
             terminalInputPrompt.innerText = "";
         }
         else if (e.key === "ArrowUp") {

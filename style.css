@@ -52,3 +52,5 @@ regular::after, light::after {
 #terminal-output * {
     white-space: pre;
 }
+
+@keyframes flip { 100% { transform:rotate(360deg); } }

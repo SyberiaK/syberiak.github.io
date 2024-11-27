@@ -1,7 +1,12 @@
 # Changelog
 
+### 0.3.1
+- Fixed available themes list shown in the `theme` command.
+- Added a bunch of new secret commands.
+- Updated MOTDs.
+
 ### 0.3.0
-- Added light theme (eww)
+- Added light theme (eww).
 - New `theme` command! Allows you to change the terminal theme.
   - Usage: `theme NAME` (example: `theme light`)
 - Fixed `changelog` command.
